@@ -48,7 +48,7 @@ let package = Package(
         ),
         .testTarget(
             name: "WalksCoreTests",
-            dependencies: ["WalksCore"],
+            dependencies: ["WalksCore", "GeoCore"],
             path: "packages/walks-core/Tests/WalksCoreTests"
         ),
         .testTarget(

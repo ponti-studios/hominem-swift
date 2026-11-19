@@ -29,9 +29,11 @@ public enum ICloudWalkPublisherError: LocalizedError, Equatable {
 public final class ICloudWalkPublisher: @unchecked Sendable {
     public let configuration: WalkArchiveConfiguration
     private let queue = DispatchQueue(label: "io.ponti.walksc core.icloud-export", qos: .utility)
+    private let folderOverride: URL?
 
-    public init(configuration: WalkArchiveConfiguration) {
+    public init(configuration: WalkArchiveConfiguration, folderOverride: URL? = nil) {
         self.configuration = configuration
+        self.folderOverride = folderOverride
     }
 
     public convenience init(containerIdentifier: String, userVisibleFolderName: String = "Walks") {
@@ -86,6 +88,13 @@ public final class ICloudWalkPublisher: @unchecked Sendable {
     }
 
     private func folderURL() throws -> URL {
+        if let folderOverride {
+            try FileManager.default.createDirectory(
+                at: folderOverride,
+                withIntermediateDirectories: true
+            )
+            return folderOverride
+        }
         guard let containerURL = FileManager.default.url(
             forUbiquityContainerIdentifier: configuration.containerIdentifier
         ) else {
