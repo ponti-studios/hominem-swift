@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Swift build and test (macOS)
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build
+        run: swift build
+
+      - name: Test
+        run: swift test
+
+  ios-build:
+    name: iOS generic build
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build for generic iOS destination
+        run: |
+          set -o pipefail
+          xcodebuild -scheme HominemSwift-Package \
+            -destination 'generic/platform=iOS' \
+            -quiet build
