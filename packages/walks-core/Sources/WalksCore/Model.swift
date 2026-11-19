@@ -1,4 +1,6 @@
 import Foundation
+import GeoCore
+import CoreLocation
 
 // MARK: - Route model (pure, no UI, no device deps)
 
@@ -21,6 +23,80 @@ public struct WalkRoute: Identifiable, Codable, Hashable, Sendable {
         return "\(minutes) min"
     }
     public var filename: String { Self.filename(for: startDate) }
+
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case startDate
+        case endDate
+        case coordinates
+        case locations
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        startDate = try container.decode(Date.self, forKey: .startDate)
+        endDate = try container.decode(Date.self, forKey: .endDate)
+        if let blob = try? container.decode(Data.self, forKey: .coordinates) {
+            locations = Self.decodeCoordinates(blob, startDate: startDate, endDate: endDate)
+        } else {
+            locations = try container.decode([RouteLocation].self, forKey: .locations)
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(startDate, forKey: .startDate)
+        try container.encode(endDate, forKey: .endDate)
+        try container.encode(Self.encodeCoordinates(locations), forKey: .coordinates)
+    }
+
+    private static func encodeCoordinates(_ locations: [RouteLocation]) -> Data {
+        var data = Data(capacity: locations.count * 8)
+        for location in locations {
+            var pair = (
+                Float32(location.latitude).bitPattern.littleEndian,
+                Float32(location.longitude).bitPattern.littleEndian
+            )
+            withUnsafeBytes(of: &pair) { data.append(contentsOf: $0) }
+        }
+        return data
+    }
+
+    private static func decodeCoordinates(
+        _ data: Data,
+        startDate: Date,
+        endDate: Date
+    ) -> [RouteLocation] {
+        let count = data.count / 8
+        guard count > 0 else { return [] }
+        let step = count > 1
+            ? endDate.timeIntervalSince(startDate) / Double(count - 1)
+            : 0
+
+        var locations: [RouteLocation] = []
+        locations.reserveCapacity(count)
+        data.withUnsafeBytes { raw in
+            for index in 0..<count {
+                let latitudeBits = raw.loadUnaligned(
+                    fromByteOffset: index * 8,
+                    as: UInt32.self
+                )
+                let longitudeBits = raw.loadUnaligned(
+                    fromByteOffset: index * 8 + 4,
+                    as: UInt32.self
+                )
+                locations.append(RouteLocation(
+                    latitude: Double(Float32(bitPattern: UInt32(littleEndian: latitudeBits))),
+                    longitude: Double(Float32(bitPattern: UInt32(littleEndian: longitudeBits))),
+                    elevation: nil,
+                    timestamp: startDate.addingTimeInterval(step * Double(index))
+                ))
+            }
+        }
+        return locations
+    }
 
     public static func filename(for startDate: Date) -> String {
         "walk-\(filenameDate.string(from: startDate)).gpx"
@@ -53,6 +129,10 @@ public struct RouteLocation: Codable, Hashable, Sendable {
         latitude.isFinite && longitude.isFinite &&
             (-90...90).contains(latitude) && (-180...180).contains(longitude)
     }
+
+    public var coordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
 }
 
 public struct WalkRouteSummary: Identifiable, Hashable, Sendable, Codable {
@@ -60,12 +140,32 @@ public struct WalkRouteSummary: Identifiable, Hashable, Sendable, Codable {
     public let startDate: Date
     public let endDate: Date
     public let hasGPSRoute: Bool
+    public let title: String?
+    public let activity: String?
+    public let bounds: GeoBounds?
+    public let pointCount: Int?
+    public let distanceMeters: Double?
 
-    public init(id: UUID, startDate: Date, endDate: Date, hasGPSRoute: Bool) {
+    public init(
+        id: UUID,
+        startDate: Date,
+        endDate: Date,
+        hasGPSRoute: Bool,
+        title: String? = nil,
+        activity: String? = nil,
+        bounds: GeoBounds? = nil,
+        pointCount: Int? = nil,
+        distanceMeters: Double? = nil
+    ) {
         self.id = id
         self.startDate = startDate
         self.endDate = endDate
         self.hasGPSRoute = hasGPSRoute
+        self.title = title
+        self.activity = activity
+        self.bounds = bounds
+        self.pointCount = pointCount
+        self.distanceMeters = distanceMeters
     }
 
     public var durationSeconds: TimeInterval { max(0, endDate.timeIntervalSince(startDate)) }
