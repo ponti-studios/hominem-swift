@@ -68,6 +68,7 @@ public struct GeoCoordinate: Codable, Hashable, Sendable {
                 + cos(lat1) * cos(lat2) * pow(sin((lon2 - lon1) / 2), 2)
         ))
         guard distance > 1e-9 else { return [self, other] }
+        guard distance < .pi - 1e-6 else { return [self, other] }
 
         return (0...count).map { index in
             let fraction = Double(index) / Double(count)
