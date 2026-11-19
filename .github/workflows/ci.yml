@@ -22,6 +22,18 @@ jobs:
       - name: Test
         run: swift test
 
+  format:
+    name: Format check
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install swift-format
+        run: brew install swift-format
+
+      - name: Lint formatting
+        run: swift-format lint --recursive Package.swift packages
+
   ios-build:
     name: iOS generic build
     runs-on: macos-26
