@@ -1,9 +1,9 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2
 import PackageDescription
 
 let package = Package(
   name: "HominemSwift",
-  platforms: [.macOS(.v14), .iOS(.v17)],
+  platforms: [.macOS(.v12), .iOS(.v15)],
   products: [
     .library(name: "WalksCore", targets: ["WalksCore"]),
     .library(name: "PlaceCore", targets: ["PlaceCore"]),
@@ -12,6 +12,8 @@ let package = Package(
     .library(name: "FlightCore", targets: ["FlightCore"]),
     .library(name: "ParcelCore", targets: ["ParcelCore"]),
     .library(name: "TransitCore", targets: ["TransitCore"]),
+    .library(name: "HominemAuth", targets: ["HominemAuth"]),
+    .library(name: "HominemAuthUI", targets: ["HominemAuthUI"]),
   ],
   targets: [
     .target(
@@ -45,6 +47,20 @@ let package = Package(
       name: "TransitCore",
       dependencies: ["GeoCore"],
       path: "packages/transit-core/Sources/TransitCore"
+    ),
+    .target(
+      name: "HominemAuth",
+      path: "packages/hominem-auth/Sources/HominemAuth"
+    ),
+    .target(
+      name: "HominemAuthUI",
+      dependencies: ["HominemAuth"],
+      path: "packages/hominem-auth/Sources/HominemAuthUI"
+    ),
+    .testTarget(
+      name: "HominemAuthTests",
+      dependencies: ["HominemAuth"],
+      path: "packages/hominem-auth/Tests/HominemAuthTests"
     ),
     .testTarget(
       name: "WalksCoreTests",
