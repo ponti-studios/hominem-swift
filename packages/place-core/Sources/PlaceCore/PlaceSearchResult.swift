@@ -39,7 +39,7 @@ public struct PlaceSearchResult: Identifiable, Hashable, Sendable, Codable {
         let latitude = (coordinate.latitude * 100_000).rounded() / 100_000
         let longitude = (coordinate.longitude * 100_000).rounded() / 100_000
         self.init(
-            id: "place|\(name.lowercased())|\(latitude)|\(longitude)",
+            id: "place|\(Self.stableName(name))|\(latitude)|\(longitude)",
             name: name,
             address: address,
             category: category,
@@ -72,4 +72,11 @@ public struct PlaceSearchResult: Identifiable, Hashable, Sendable, Codable {
 
     public var latitude: Double { coordinate.latitude }
     public var longitude: Double { coordinate.longitude }
+
+    /// Identity form of a place name: canonical composition, trimmed, case-folded.
+    static func stableName(_ name: String) -> String {
+        name.precomposedStringWithCanonicalMapping
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+    }
 }

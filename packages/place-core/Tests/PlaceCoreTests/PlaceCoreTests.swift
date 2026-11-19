@@ -37,6 +37,51 @@ final class PlaceCoreTests: XCTestCase {
         XCTAssertNotEqual(first.id, second.id)
     }
 
+    func testIdentityIsStableAcrossCaseAndWhitespace() {
+        let first = PlaceSearchResult(
+            name: "Blue Bottle",
+            address: "",
+            category: "",
+            coordinate: PlaceCoordinate(latitude: 51.5, longitude: -0.1)
+        )
+        let second = PlaceSearchResult(
+            name: "  BLUE BOTTLE  ",
+            address: "",
+            category: "",
+            coordinate: PlaceCoordinate(latitude: 51.5, longitude: -0.1)
+        )
+
+        XCTAssertEqual(first.id, second.id)
+    }
+
+    func testIdentityIsStableAcrossUnicodeComposition() {
+        let precomposed = PlaceSearchResult(
+            name: "Café Rouge",
+            address: "",
+            category: "",
+            coordinate: PlaceCoordinate(latitude: 51.5, longitude: -0.1)
+        )
+        let decomposed = PlaceSearchResult(
+            name: "Café Rouge",
+            address: "",
+            category: "",
+            coordinate: PlaceCoordinate(latitude: 51.5, longitude: -0.1)
+        )
+
+        XCTAssertEqual(precomposed.id, decomposed.id)
+    }
+
+    func testEmptyQueryThrowsBeforeAnySearch() async {
+        let search = MapKitPlaceSearch()
+
+        do {
+            _ = try await search.search("   ", near: nil, limit: 20)
+            XCTFail("Expected emptyQuery")
+        } catch {
+            XCTAssertEqual(error as? PlaceSearchError, .emptyQuery)
+        }
+    }
+
     func testSearchErrorsHaveReadableDescriptions() {
         XCTAssertEqual(
             PlaceSearchError.emptyQuery.localizedDescription,

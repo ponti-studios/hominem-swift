@@ -38,6 +38,7 @@ public struct MapKitPlaceSearch: PlaceSearching {
         let address = [
             placemark.thoroughfare,
             placemark.locality,
+            placemark.postalCode,
             placemark.administrativeArea,
         ]
             .compactMap { $0 }
