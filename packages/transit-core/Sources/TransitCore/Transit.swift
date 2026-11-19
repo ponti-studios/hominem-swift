@@ -67,7 +67,7 @@ public protocol JamCamProviding: Sendable {
     func fetchCameras() async throws -> [JamCam]
 }
 
-public enum JamCamError: Error, LocalizedError {
+public enum JamCamError: Error, Equatable, LocalizedError {
     case badStatus(Int)
     case badPayload
 
