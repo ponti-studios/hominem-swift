@@ -7,7 +7,6 @@ import Testing
   private func column(_ i: Int) -> Column { Column(low: Float(i), high: Float(i), rms: Float(i)) }
 
   @Test func theNewestColumnsComeBackOldestFirst() {
-    guard #available(macOS 15.0, *) else { return }
     let ring = ColumnRing(capacity: 16)
     for i in 0..<100 { ring.append(column(i)) }
     var out = [Column](repeating: .silent, count: 5)
@@ -17,7 +16,6 @@ import Testing
   }
 
   @Test func earlyOnTheFrontIsSilent() {
-    guard #available(macOS 15.0, *) else { return }
     let ring = ColumnRing(capacity: 16)
     ring.append(column(1))
     ring.append(column(2))
@@ -29,7 +27,6 @@ import Testing
 
   /// A new take must not open on the last one's tail.
   @Test func clearingForgetsTheLastTake() {
-    guard #available(macOS 15.0, *) else { return }
     let ring = ColumnRing(capacity: 16)
     for i in 1...5 { ring.append(column(i)) }
     #expect(ring.count == 5)
@@ -48,7 +45,6 @@ import Testing
   /// A writer on another thread racing a reader: every copy must be a run of consecutive columns,
   /// never a torn mix of old and new.
   @Test func aReaderRacingAWriterNeverSeesATornRun() async {
-    guard #available(macOS 15.0, *) else { return }
     let ring = ColumnRing(capacity: 64)
     let total = 400_000
     let writer = Task.detached {
@@ -71,7 +67,6 @@ import Testing
 
 @Suite struct RingRetryTests {
   @Test func aColumnCopyLappedByTheWriterIsThrownAwayAndRedone() {
-    guard #available(macOS 15.0, *) else { return }
     let ring = ColumnRing(capacity: 8)
     for i in 0..<8 { ring.append(Column(low: Float(i), high: 0, rms: 0)) }
     var laps = 0
@@ -89,7 +84,6 @@ import Testing
   }
 
   @Test func aSpectrumCopyLappedByTheWriterIsThrownAwayAndRedone() {
-    guard #available(macOS 15.0, *) else { return }
     let ring = SpectrumRing(bands: 2, capacity: 8)
     func frame(_ i: Int) -> [Float] { [Float(i), Float(-i)] }
     for i in 0..<8 { frame(i).withUnsafeBufferPointer { ring.append($0) } }

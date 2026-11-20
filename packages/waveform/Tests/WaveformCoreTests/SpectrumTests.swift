@@ -119,7 +119,6 @@ private func frames(
   }
 
   @Test func theRingHandsFramesOverOldestFirst() {
-    guard #available(macOS 15.0, *) else { return }
     let ring = SpectrumRing(bands: 3, capacity: 8)
     for i in 0..<20 {
       let values: [Float] = [Float(i), Float(i) + 0.1, Float(i) + 0.2]

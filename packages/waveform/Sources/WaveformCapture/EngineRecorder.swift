@@ -16,7 +16,6 @@
   ///
   /// Swift: buffers arrive on an audio thread, so the per-buffer work only converts and feeds the builders from
   /// reused buffers; a serial queue does the slow part, the writing.
-  @available(iOS 18.0, macOS 15.0, *)
   public final class EngineRecorder: @unchecked Sendable {
     /// Why a recording stopped being complete. `stop()` throws it rather than hand back a clip that
     /// ends part way, because a clip cut short sends and answers as if it were the whole.
@@ -207,7 +206,6 @@
 
   /// Which source to record from, so an app can say "this device, or whatever the system chose" without knowing what
   /// that costs.
-  @available(macOS 14.0, *)
   public enum AudioSourceChoice {
     /// A pinned device records through `AVCaptureSession`; no pin keeps exactly the path the app had before.
     public static func make(settings: CaptureSettings, deviceUID: String?) -> AudioSource {

@@ -5,7 +5,6 @@ import WaveformCore
 /// The orb as a spectrogram wrapped round a sphere: how far a dot is from the equator is how long ago
 /// (newest at the equator, as in the plain orb); where it sits round the sphere is pitch, low on one
 /// side to high on the other. A dot pushes out, and grows, by how loud that pitch was at that moment.
-@available(iOS 18.0, macOS 15.0, *)
 public struct SpectrumOrbView: View {
   let spectrum: SpectrumRing
   var columnsPerSecond: Double

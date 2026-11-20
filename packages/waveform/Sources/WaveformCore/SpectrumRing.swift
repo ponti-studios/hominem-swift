@@ -2,7 +2,6 @@ import Synchronization
 
 /// The newest spectrum frames, handed from the audio thread to the screen without a lock. The same
 /// idea as `ColumnRing`, with `bands` numbers in each slot.
-@available(iOS 18.0, macOS 15.0, watchOS 11.0, *)
 public final class SpectrumRing: @unchecked Sendable {
   public let bands: Int
   public let capacity: Int

@@ -3,7 +3,6 @@ import AVFoundation
 /// Listens to the microphone, or plays a file and listens to that, and fills a `ColumnRing` with
 /// columns as the audio goes by. The columns are made right in the audio callback (no allocation, no
 /// lock); the screen only reads the ring.
-@available(iOS 18.0, macOS 15.0, watchOS 11.0, *)
 public final class LiveInput: @unchecked Sendable {
   public let ring: ColumnRing
   /// The spectrum, one frame per column.

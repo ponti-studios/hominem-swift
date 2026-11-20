@@ -60,7 +60,6 @@ import Testing
   }
 
   @Test func playingAFileFillsTheColumnAndSpectrumRings() async throws {
-    guard #available(macOS 15.0, *) else { return }
     let engine = try offlineEngine()
     let live = LiveInput(ring: ColumnRing(capacity: 1024), columnsPerSecond: 120, engine: engine)
     let url = try wav(seconds: 1)
@@ -81,7 +80,6 @@ import Testing
   }
 
   @Test func theClockIsToldWhenEachBufferBegan() async throws {
-    guard #available(macOS 15.0, *) else { return }
     let engine = try offlineEngine()
     let live = LiveInput(ring: ColumnRing(capacity: 1024), engine: engine)
     let url = try wav(seconds: 1)
@@ -95,7 +93,6 @@ import Testing
   }
 
   @Test func aMissingFileThrows() throws {
-    guard #available(macOS 15.0, *) else { return }
     let live = LiveInput(ring: ColumnRing(capacity: 16), engine: try offlineEngine())
     #expect(throws: (any Error).self) {
       try live.play(file: URL(fileURLWithPath: "/nonexistent/none.wav"))
@@ -103,7 +100,6 @@ import Testing
   }
 
   @Test func aRefusedMicrophoneThrowsAndSaysWhy() async throws {
-    guard #available(macOS 15.0, *) else { return }
     let live = LiveInput(
       ring: ColumnRing(capacity: 16), engine: try offlineEngine(), requestAccess: { false })
     await #expect(throws: LiveInput.MicrophoneError.self) { try await live.startMicrophone() }
@@ -111,7 +107,6 @@ import Testing
   }
 
   @Test func anAllowedMicrophoneFillsTheRings() async throws {
-    guard #available(macOS 15.0, *) else { return }
     let engine = try offlineEngine()
     let tone = (0..<4096).map { Float(0.5 * sin(2 * Double.pi * 440 * Double($0) / Self.rate)) }
     let source = pcm(tone)
@@ -130,7 +125,6 @@ import Testing
   }
 
   @Test func theDefaultEngineIsCreatedWhenNoneIsGiven() {
-    guard #available(macOS 15.0, *) else { return }
     let live = LiveInput(ring: ColumnRing(capacity: 16), requestAccess: { true })
     #expect(live.columnsPerSecond == 120)
   }
@@ -138,7 +132,6 @@ import Testing
 
 @Suite struct StampTests {
   @Test func aBufferWithAHostTimeTellsTheClockWhenItBegan() {
-    guard #available(macOS 15.0, *) else { return }
     let clock = StreamClock()
     let when = AVAudioTime(hostTime: mach_absolute_time())
     LiveInput.stamp(clock, at: when, samplesSeen: 48_000, rate: 48_000)
@@ -147,7 +140,6 @@ import Testing
   }
 
   @Test func aBufferWithoutOneLeavesTheClockAlone() {
-    guard #available(macOS 15.0, *) else { return }
     let clock = StreamClock()
     LiveInput.stamp(
       clock, at: AVAudioTime(sampleTime: 0, atRate: 48_000), samplesSeen: 0, rate: 48_000)

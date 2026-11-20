@@ -80,7 +80,6 @@ import WaveformCore
   // MARK: - Ponte: a WAV the on-device engines can read
 
   @Test func recordsTheWaveformTranscriptionWants() async throws {
-    guard #available(macOS 15.0, *) else { return }
     let dir = Scratch()
     let (engine, player) = try offlineEngine()
     let recorder = EngineRecorder(settings: .localTranscription, engine: engine, source: player)
@@ -120,7 +119,6 @@ import WaveformCore
   // MARK: - Thames: AAC plus the spectrum its orb draws
 
   @Test func recordsTheStreamAndItsSpectrum() async throws {
-    guard #available(macOS 15.0, *) else { return }
     let dir = Scratch()
     let (engine, player) = try offlineEngine()
     let recorder = EngineRecorder(settings: .streamingSpeech, engine: engine, source: player)
@@ -154,7 +152,6 @@ import WaveformCore
   }
 
   @Test func aTranscriptionRecordingPaysForNoSpectrum() {
-    guard #available(macOS 15.0, *) else { return }
     #expect(CaptureSettings.localTranscription.spectrumBands == nil)
     #expect(CaptureSettings.streamingSpeech.spectrumBands == 24)
     #expect(CaptureSettings.localTranscription.fileExtension == "wav")
@@ -164,7 +161,6 @@ import WaveformCore
   // MARK: - The state machine, shared by both apps
 
   @Test func stopsCleanlyAndTwiceIsHarmless() throws {
-    guard #available(macOS 15.0, *) else { return }
     let dir = Scratch()
     let (engine, player) = try offlineEngine()
     let recorder = EngineRecorder(settings: .localTranscription, engine: engine, source: player)
@@ -175,7 +171,6 @@ import WaveformCore
   }
 
   @Test func reportsHowLongItHasBeenRecording() async throws {
-    guard #available(macOS 15.0, *) else { return }
     let dir = Scratch()
     let (engine, player) = try offlineEngine()
     let recorder = EngineRecorder(settings: .localTranscription, engine: engine, source: player)
@@ -190,7 +185,6 @@ import WaveformCore
   }
 
   @Test func aRouteChangeKeepsRecordingToTheSameFile() async throws {
-    guard #available(macOS 15.0, *) else { return }
     let dir = Scratch()
     let (engine, player) = try offlineEngine()
     let recorder = EngineRecorder(settings: .localTranscription, engine: engine, source: player)
@@ -209,7 +203,6 @@ import WaveformCore
   }
 
   @Test func aFailedRestartAfterARouteChangeMakesTheRecordingIncomplete() async throws {
-    guard #available(macOS 15.0, *) else { return }
     let dir = Scratch()
     let (engine, player) = try offlineEngine()
     let recorder = EngineRecorder(settings: .localTranscription, engine: engine, source: player)
@@ -223,7 +216,6 @@ import WaveformCore
   }
 
   @Test func anUnwritableFileIsAnError() throws {
-    guard #available(macOS 15.0, *) else { return }
     let (engine, player) = try offlineEngine()
     let recorder = EngineRecorder(settings: .localTranscription, engine: engine, source: player)
     #expect(throws: (any Error).self) {

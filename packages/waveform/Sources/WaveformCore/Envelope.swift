@@ -54,7 +54,6 @@ public struct ColumnWindow {
 
 /// Where on the column timeline "now" is, for a screen that wants to show sound a fixed moment after it
 /// was heard.
-@available(iOS 18.0, macOS 15.0, watchOS 11.0, *)
 public struct Playhead {
   public let columnsPerSecond: Double
   /// How far behind the audio the picture runs. It must cover the audio buffer, the time to finish a

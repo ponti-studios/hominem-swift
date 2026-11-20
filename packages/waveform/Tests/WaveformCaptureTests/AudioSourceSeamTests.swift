@@ -66,7 +66,6 @@ import WaveformCore
   }
 
   @Test func aSourceThatIsNotTheEngineRecordsTheFile() throws {
-    guard #available(macOS 15.0, *) else { return }
     let scratch = Scratch()
     let out = scratch.file("seam.wav")
     // 48 kHz in, 16 kHz out: 48 000 frames become 16 000, i.e. one second of the file's own rate.
@@ -94,7 +93,6 @@ import WaveformCore
   }
 
   @Test func aFormatChangePartWayThroughIsFollowed() throws {
-    guard #available(macOS 15.0, *) else { return }
     let scratch = Scratch()
     let out = scratch.file("change.wav")
     let source = FakeSource(rate: 48_000)
@@ -113,7 +111,6 @@ import WaveformCore
   }
 
   @Test func aSourceThatCannotOpenThrowsInsteadOfRecordingSilence() throws {
-    guard #available(macOS 15.0, *) else { return }
     struct DeviceGone: LocalizedError { var errorDescription: String? { "the device went away" } }
     let scratch = Scratch()
     let source = FakeSource(rate: 48_000, failure: DeviceGone())
@@ -126,7 +123,6 @@ import WaveformCore
   }
 
   @Test func theColumnsAreBuiltFromASourceThatIsNotTheEngine() throws {
-    guard #available(macOS 15.0, *) else { return }
     let scratch = Scratch()
     let source = FakeSource(rate: 48_000)
     let recorder = EngineRecorder(settings: .localTranscription, audioSource: source)
@@ -141,7 +137,6 @@ import WaveformCore
   }
 
   @Test func choosingASourceWithoutAPinKeepsTheEnginePath() {
-    guard #available(macOS 15.0, *) else { return }
     // The promise to the app: no pin means no change at all in how it records.
     let unpinned = AudioSourceChoice.make(settings: .localTranscription, deviceUID: nil)
     #expect(unpinned is EngineSource)

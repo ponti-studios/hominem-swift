@@ -28,7 +28,6 @@ import WaveformCore
     return count
   }
 
-  @available(macOS 15.0, *)
   private func loudRing(seconds: Double = 1.2) -> ColumnRing {
     let ring = ColumnRing(capacity: 4096)
     let builder = ColumnBuilder(sampleRate: 48_000, columnsPerSecond: 120, windowBlocks: 3)
@@ -39,7 +38,6 @@ import WaveformCore
     return ring
   }
 
-  @available(macOS 15.0, *)
   private func spectrum(seconds: Double = 1.2) -> SpectrumRing {
     let ring = SpectrumRing(bands: 24, capacity: 4096)
     let builder = SpectrumBuilder(sampleRate: 48_000)
@@ -51,14 +49,12 @@ import WaveformCore
   }
 
   @Test func theWaveformDrawsBarsForALoudRingAndNothingButTheHUDForASilentOne() {
-    guard #available(macOS 15.0, *) else { return }
     let loud = ink(image(WaveformView(ring: loudRing(), showStats: false)))
     let silent = ink(image(WaveformView(ring: ColumnRing(capacity: 64), showStats: false)))
     #expect(loud > silent + 200)
   }
 
   @Test func theWaveformSlidesBetweenColumnArrivalsAndShowsItsCost() {
-    guard #available(macOS 15.0, *) else { return }
     let ring = loudRing()
     let before = ink(image(WaveformView(ring: ring, columnsPerSecond: 120, barWidth: 4, gap: 1)))
     ring.append(Column(low: -0.5, high: 0.5, rms: 0.3))
@@ -67,7 +63,6 @@ import WaveformCore
   }
 
   @Test func theOrbDrawsDotsAndIsStillWhenNotTurning() {
-    guard #available(macOS 15.0, *) else { return }
     let ring = loudRing()
     let a = image(OrbView(ring: ring, showStats: false, turning: false))
     let b = image(OrbView(ring: ring, showStats: false, turning: false))
@@ -76,7 +71,6 @@ import WaveformCore
   }
 
   @Test func theOrbIsAPlainSphereForASilentRing() {
-    guard #available(macOS 15.0, *) else { return }
     let silent = ink(
       image(
         OrbView(ring: ColumnRing(capacity: 4096), showStats: false, turning: false, dotCount: 600)))
@@ -87,7 +81,6 @@ import WaveformCore
   }
 
   @Test func theOrbCanFollowAnAudioClockAndShowItsStats() {
-    guard #available(macOS 15.0, *) else { return }
     let clock = StreamClock()
     clock.update(hostSeconds: 100, streamSeconds: 2)
     let withStats = ink(
@@ -99,7 +92,6 @@ import WaveformCore
   }
 
   @Test func theSpectrumOrbDrawsPitchAsShape() {
-    guard #available(macOS 15.0, *) else { return }
     let ring = spectrum()
     let a = image(SpectrumOrbView(spectrum: ring, showStats: false, turning: false))
     #expect(ink(a) > 300)
@@ -112,7 +104,6 @@ import WaveformCore
   }
 
   @Test func theSpectrumOrbSpinsWhenAskedAndShowsStats() {
-    guard #available(macOS 15.0, *) else { return }
     let clock = StreamClock()
     clock.update(hostSeconds: 50, streamSeconds: 1)
     let v = image(
@@ -123,7 +114,6 @@ import WaveformCore
   }
 
   @Test func aStyledSpectrumOrbStillDrawsAndFaintLayersDrawLess() {
-    guard #available(macOS 15.0, *) else { return }
     let bold = ink(image(SpectrumOrbView(spectrum: spectrum(), showStats: false, turning: false)))
     let faint = ink(
       image(

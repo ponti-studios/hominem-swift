@@ -4,7 +4,6 @@ import WaveformCore
 
 /// The newest columns scrolling in from the right: a faint bar from lowest to highest sample, and a
 /// bright one for loudness. One path per layer, so a frame is two fills however many bars there are.
-@available(iOS 18.0, macOS 15.0, *)
 public struct WaveformView: View {
   let ring: ColumnRing
   var columnsPerSecond: Double

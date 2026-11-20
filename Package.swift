@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
   name: "HominemSwift",
-  platforms: [.macOS(.v12), .iOS(.v15), .watchOS(.v10)],
+  platforms: [.macOS(.v15), .iOS(.v18), .watchOS(.v10)],
   products: [
     .library(name: "WalksCore", targets: ["WalksCore"]),
     .library(name: "PlaceCore", targets: ["PlaceCore"]),
