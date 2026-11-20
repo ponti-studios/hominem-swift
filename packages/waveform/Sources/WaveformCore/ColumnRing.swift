@@ -6,6 +6,7 @@ import Synchronization
 /// publishes the new count with release ordering; the reader loads the count with acquire ordering,
 /// so it never sees a column that is not finished. If the writer laps the reader mid-copy, the copy
 /// is thrown away and tried again, so what is drawn is never torn.
+@available(iOS 18.0, macOS 15.0, watchOS 11.0, *)
 public final class ColumnRing: @unchecked Sendable {
   private let slots: UnsafeMutablePointer<Column>
   private let mask: Int

@@ -7,6 +7,7 @@ import Synchronization
 /// The audio thread tells it, for each buffer, when that buffer began on the host clock. The offset
 /// between the two clocks barely drifts, so it is smoothed heavily: one buffer's scheduling noise
 /// does not move it. Many threads may read; one writes.
+@available(iOS 18.0, macOS 15.0, watchOS 11.0, *)
 public final class StreamClock: @unchecked Sendable {
   private let offsetBits = Atomic<UInt64>(Double.nan.bitPattern)
   private var smoothed = Double.nan  // the writer's copy

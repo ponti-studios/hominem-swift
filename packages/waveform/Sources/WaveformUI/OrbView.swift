@@ -4,6 +4,7 @@ import WaveformCore
 
 /// The orb of dots, loudness only: time runs from the equator (now) to the poles. The geometry and the
 /// sound-to-shape maths are `OrbModel`; this turns the sphere, projects it and draws it.
+@available(iOS 18.0, macOS 15.0, *)
 public struct OrbView: View {
   let ring: ColumnRing
   var columnsPerSecond: Double

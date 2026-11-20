@@ -12,9 +12,13 @@ Waveform provides three products:
 - `WaveformCapture` — one recording engine with two sets of settings:
   Thames streams speech, Ponte transcribes it.
 
-## Platform floors
+## Platform availability
 
-- macOS 15, iOS 18 (WaveformCore uses Swift's Synchronization atomics)
+The monorepo itself supports macOS 12, iOS 15, and watchOS 10. APIs backed by
+Swift's `Synchronization` atomics are annotated for macOS 15 / iOS 18 / watchOS
+11; those are the minimum OS versions for `ColumnRing`, `SpectrumRing`,
+`StreamClock`, live input, the WaveformUI views, and `EngineRecorder`. Other
+Waveform APIs remain available at the monorepo floor.
 
 ## Coverage gate
 

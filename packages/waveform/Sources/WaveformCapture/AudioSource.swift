@@ -82,6 +82,7 @@
   /// Device-first by construction: the device is known before anything is built, so there is no graph to repoint.
   /// `AVCaptureAudioDataOutput.audioSettings` does the format conversion, so asking for the file's own format yields
   /// exactly that in every sample buffer.
+  @available(macOS 14.0, *)
   public final class CaptureSource: AudioSource {
     private let uid: String?
     private let settings: CaptureSettings

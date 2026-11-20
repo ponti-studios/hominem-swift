@@ -39,6 +39,7 @@ import Testing
   }
 
   @Test func theStreamClockSettlesOnTheOffsetDespiteBufferNoise() {
+    guard #available(macOS 15.0, *) else { return }
     let clock = StreamClock()
     #expect(clock.offset == nil)
     let jitter = noise(1_000).map { $0 * 0.003 }
@@ -51,6 +52,7 @@ import Testing
   }
 
   @Test func thePlayheadRunsAFixedTimeBehindAndNeverAheadOfTheData() {
+    guard #available(macOS 15.0, *) else { return }
     let clock = StreamClock()
     clock.update(hostSeconds: 1_000, streamSeconds: 0)
     let playhead = Playhead(columnsPerSecond: 120, latency: 0.06)
