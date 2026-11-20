@@ -12,18 +12,17 @@ cd "$(dirname "$0")/.."
 
 swift test --enable-code-coverage "$@"
 
-BINPATH=$(swift build --show-bin-path)
-PROFDATA="$BINPATH/codecov/default.profdata"
+PROFDATA=$(find .build -name default.profdata -print -quit)
+[[ -n "$PROFDATA" ]] || { echo "ERROR: coverage profile not found"; exit 2; }
 BINS=()
-for bundle in "$BINPATH"/*.xctest; do
-  if [[ "$bundle" == *Waveform* ]]; then
-    BINS+=("$bundle/Contents/MacOS/$(basename "${bundle%.xctest}")")
-  fi
-done
-[[ ${#BINS[@]} -eq 0 ]] && { echo "ERROR: no Waveform xctest bundles found"; exit 2; }
+while IFS= read -r bundle; do
+  binary="$bundle/Contents/MacOS/$(basename "${bundle%.xctest}")"
+  [[ -x "$binary" ]] && BINS+=("$binary")
+done < <(find .build -type d -name '*.xctest' -print)
+[[ ${#BINS[@]} -gt 0 ]] || { echo "ERROR: no XCTest bundles found"; exit 2; }
 OBJECTS=()
 for b in "${BINS[@]:1}"; do OBJECTS+=(-object "$b"); done
-IGNORE='(Tests|\.build|WaveformApp|SystemMicrophone|WaveformCapture)'
+IGNORE='(Tests|\.build|WaveformApp|SystemMicrophone|WaveformCapture|packages/(walks-core|place-core|geo-core|utility-core|flight-core|parcel-core|transit-core|hominem-auth)/)'
 
 xcrun llvm-cov report "${BINS[0]}" ${OBJECTS[@]+"${OBJECTS[@]}"} -instr-profile "$PROFDATA" -ignore-filename-regex="$IGNORE"
 
