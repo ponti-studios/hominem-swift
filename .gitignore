@@ -1,0 +1,6 @@
+*.png
+*.xcodeproj
+.build/
+.swiftpm/
+DerivedData/
+!docs/*.png
