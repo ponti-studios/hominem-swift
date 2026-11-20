@@ -89,7 +89,8 @@ import simd
   @Test func theDefaultStyleIsTheOriginalLook() {
     let style = OrbStyle()
     #expect(style.dotBase == 1 && style.dotGrowth == 2.8 && style.contrast == 1)
-    #expect(style.opacities == OrbProjection.opacities && style.spinRate == 0.12 && style.tip == 0.32)
+    #expect(
+      style.opacities == OrbProjection.opacities && style.spinRate == 0.12 && style.tip == 0.32)
   }
 
   @Test func contrastKeepsQuietPitchesStillAndLeavesTheEndsAlone() {

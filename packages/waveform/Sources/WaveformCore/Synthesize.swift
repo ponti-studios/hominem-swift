@@ -47,7 +47,9 @@ extension Synthesize {
       let pitch = 118 + 22 * sin(2 * .pi * 0.6 * t) + 8 * sin(2 * .pi * 3.1 * t)
       for h in 1...39 {
         let f = pitch * Double(h)
-        gains[h] = (resonance(f, f1, 110) + 0.7 * resonance(f, f2, 180)) / Double(h).squareRoot() * (f < 7_500 ? 1 : 0)
+        gains[h] =
+          (resonance(f, f1, 110) + 0.7 * resonance(f, f2, 180)) / Double(h).squareRoot()
+          * (f < 7_500 ? 1 : 0)
       }
       for i in start..<min(count, start + block) {
         var sample = 0.0

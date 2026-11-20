@@ -6,9 +6,9 @@ import Testing
 @Suite struct ClockTests {
   /// A fixed pseudo-random sequence in -1...1, the same every run.
   private func noise(_ n: Int) -> [Double] {
-    var state: UInt64 = 0x9E3779B97F4A7C15
+    var state: UInt64 = 0x9E37_79B9_7F4A_7C15
     return (0..<n).map { _ in
-      state = state &* 6364136223846793005 &+ 1442695040888963407
+      state = state &* 6_364_136_223_846_793_005 &+ 1_442_695_040_888_963_407
       return Double(state >> 11) / Double(1 << 53) * 2 - 1
     }
   }
@@ -81,7 +81,8 @@ import Testing
     let single = spread(1)
     let windowed = spread(12)
     #expect(single > 0.1)  // one column wobbles with the pitch
-    #expect(windowed < single / 8, "\(windowed) vs \(single)")  // a 25 ms window (12 columns) barely does
+    // A 25 ms window (12 columns) barely wobbles.
+    #expect(windowed < single / 8, "\(windowed) vs \(single)")
   }
 
   @Test func levelRisesAtOnceAndFallsAwayAtTheReleaseRate() {

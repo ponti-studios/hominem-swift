@@ -52,7 +52,8 @@ public final class SpectrumRing: @unchecked Sendable {
       real = min(n, end)
       if real < n { out.update(repeating: 0, count: (n - real) * bands) }
       for i in 0..<real {
-        (out + (n - real + i) * bands).update(from: slots + ((end - real + i) & mask) * bands, count: bands)
+        (out + (n - real + i) * bands).update(
+          from: slots + ((end - real + i) & mask) * bands, count: bands)
       }
       afterCopy?()
     } while written.load(ordering: .acquiring) - (end - real) > capacity

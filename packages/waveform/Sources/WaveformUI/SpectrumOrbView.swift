@@ -35,7 +35,7 @@ public struct SpectrumOrbView: View {
     scale: Scale = .decibels(floor: -66), gain: Float = 0.5, historySeconds: Double = 0.8,
     showStats: Bool = true, turning: Bool = true, tint: Color = .mint, dotCount: Int = 1_800,
     style: OrbStyle = OrbStyle()
-    ) {
+  ) {
     self.spectrum = spectrum
     self.columnsPerSecond = columnsPerSecond
     self.sampleRate = sampleRate
@@ -55,7 +55,10 @@ public struct SpectrumOrbView: View {
   public var body: some View {
     FrameCanvas(
       scratch: scratch, showStats: showStats,
-      stats: { String(format: "draw %.2f ms · %d dots · %d frames", scratch.drawMs, model.count, spectrum.count) },
+      stats: {
+        String(
+          format: "draw %.2f ms · %d dots · %d frames", scratch.drawMs, model.count, spectrum.count)
+      },
       draw: draw)
   }
 

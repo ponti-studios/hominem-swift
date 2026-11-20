@@ -96,7 +96,9 @@ private func frames(
 @Suite struct SpectrumWindowTests {
   /// A little spectrogram with a known value at each (frame, band): value = 0.1 * band + 0.01 * frame.
   private func window(frames: Int, bands: Int, body: (SpectrumWindow) -> Void) {
-    let values = (0..<(frames * bands)).map { Float(0.1 * Double($0 % bands) + 0.01 * Double($0 / bands)) }
+    let values = (0..<(frames * bands)).map {
+      Float(0.1 * Double($0 % bands) + 0.01 * Double($0 / bands))
+    }
     values.withUnsafeBufferPointer { body(SpectrumWindow(values: $0, bands: bands, base: 0)) }
   }
 

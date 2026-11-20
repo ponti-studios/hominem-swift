@@ -29,7 +29,9 @@ import Testing
     let a = Synthesize.vowels(seconds: 4, sampleRate: 16_000)
     #expect(a == Synthesize.vowels(seconds: 4, sampleRate: 16_000))
     #expect(peak(a[...]) > 0.05)
-    let silent = stride(from: 0, to: a.count - 160, by: 160).filter { peak(a[$0..<$0 + 160]) < 1e-6 }
+    let silent = stride(from: 0, to: a.count - 160, by: 160).filter {
+      peak(a[$0..<$0 + 160]) < 1e-6
+    }
     #expect(silent.count > 5)
   }
 }

@@ -3,7 +3,8 @@ import Testing
 
 @testable import WaveformCore
 
-private func sine(_ amplitude: Float, hz: Double, seconds: Double, rate: Double = 48_000) -> [Float] {
+private func sine(_ amplitude: Float, hz: Double, seconds: Double, rate: Double = 48_000) -> [Float]
+{
   (0..<Int(seconds * rate)).map { amplitude * Float(sin(2 * .pi * hz * Double($0) / rate)) }
 }
 
@@ -55,12 +56,16 @@ private func columns(
   }
 
   @Test func theNumberOfColumnsStaysRightWhenTheRateDoesNotDivideEvenly() {
-    for (rate, perSecond) in [(44_100.0, 60.0), (44_100.0, 47.0), (48_000.0, 59.94), (16_000.0, 120.0)] {
+    for (rate, perSecond) in [
+      (44_100.0, 60.0), (44_100.0, 47.0), (48_000.0, 59.94), (16_000.0, 120.0),
+    ] {
       let seconds = 10.0
       let signal = [Float](repeating: 0.1, count: Int(seconds * rate))
       let result = columns(of: signal, rate: rate, perSecond: perSecond, chunk: 777)
       let expected = Int((seconds * perSecond).rounded(.down))
-      #expect(abs(result.count - expected) <= 1, "\(rate) at \(perSecond): \(result.count) not \(expected)")
+      #expect(
+        abs(result.count - expected) <= 1,
+        "\(rate) at \(perSecond): \(result.count) not \(expected)")
     }
   }
 
@@ -100,10 +105,13 @@ private func columns(
   }
 
   @Test func theSpectrumBuilderCountsSamplesAndFrames() {
-    let builder = SpectrumBuilder(sampleRate: 16_000, columnsPerSecond: 100, fftSize: 256, lowHz: 100, highHz: 4_000)
+    let builder = SpectrumBuilder(
+      sampleRate: 16_000, columnsPerSecond: 100, fftSize: 256, lowHz: 100, highHz: 4_000)
     let x = [Float](repeating: 0.1, count: 800)
     var emitted = 0
-    x.withUnsafeBufferPointer { builder.feed($0.baseAddress!, count: $0.count) { _ in emitted += 1 } }
+    x.withUnsafeBufferPointer {
+      builder.feed($0.baseAddress!, count: $0.count) { _ in emitted += 1 }
+    }
     #expect(builder.samplesSeen == 800)
     #expect(builder.frames == 5 && emitted == 5)
   }

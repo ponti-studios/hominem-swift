@@ -70,7 +70,8 @@ public final class LiveInput: @unchecked Sendable {
     self.builder = builder
     let ring = ring
     let spectrum = spectrum
-    let spectrumBuilder = SpectrumBuilder(sampleRate: format.sampleRate, columnsPerSecond: columnsPerSecond)
+    let spectrumBuilder = SpectrumBuilder(
+      sampleRate: format.sampleRate, columnsPerSecond: columnsPerSecond)
     let clock = clock
     let rate = format.sampleRate
     node.installTap(onBus: 0, bufferSize: 512, format: format) { buffer, when in

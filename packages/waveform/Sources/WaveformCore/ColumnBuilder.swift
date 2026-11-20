@@ -30,7 +30,8 @@ public final class ColumnBuilder {
   private let decay: Float
 
   public init(
-    sampleRate: Double, columnsPerSecond: Double, windowBlocks: Int = 1, releaseSeconds: Double = 0.15
+    sampleRate: Double, columnsPerSecond: Double, windowBlocks: Int = 1,
+    releaseSeconds: Double = 0.15
   ) {
     precondition(sampleRate > 0 && columnsPerSecond > 0 && columnsPerSecond <= sampleRate)
     precondition(windowBlocks >= 1)

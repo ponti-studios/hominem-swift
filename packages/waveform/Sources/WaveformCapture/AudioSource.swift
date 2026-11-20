@@ -101,11 +101,13 @@
       }
 
       session.beginConfiguration()
-      defer { session.commitConfiguration() }   // startRunning throws between begin and commit
+      defer { session.commitConfiguration() }  // startRunning throws between begin and commit
       if session.canSetSessionPreset(.high) { session.sessionPreset = .high }
 
       let input = try AVCaptureDeviceInput(device: device)
-      guard session.canAddInput(input) else { throw CaptureSourceError.deviceRefused(device.localizedName) }
+      guard session.canAddInput(input) else {
+        throw CaptureSourceError.deviceRefused(device.localizedName)
+      }
       session.addInput(input)
 
       let dataOutput = AVCaptureAudioDataOutput()
@@ -145,9 +147,11 @@
 
     /// The device for a UID, or the system default when there is none.
     static func device(uid: String?) -> AVCaptureDevice? {
-      if let uid, let match = AVCaptureDevice.DiscoverySession(
-        deviceTypes: [.microphone, .external], mediaType: .audio, position: .unspecified
-      ).devices.first(where: { $0.uniqueID == uid }) {
+      if let uid,
+        let match = AVCaptureDevice.DiscoverySession(
+          deviceTypes: [.microphone, .external], mediaType: .audio, position: .unspecified
+        ).devices.first(where: { $0.uniqueID == uid })
+      {
         return match
       }
       return AVCaptureDevice.default(for: .audio)
@@ -164,19 +168,25 @@
         self.onBuffer = onBuffer
       }
 
-      func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer,
-                         from connection: AVCaptureConnection) {
+      func captureOutput(
+        _ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer,
+        from connection: AVCaptureConnection
+      ) {
         guard let description = CMSampleBufferGetFormatDescription(sampleBuffer),
-              let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(description),
-              let format = AVAudioFormat(streamDescription: asbd),
-              let block = CMSampleBufferGetDataBuffer(sampleBuffer),
-              CMBlockBufferIsRangeContiguous(block, atOffset: 0, length: 0) else { return }
+          let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(description),
+          let format = AVAudioFormat(streamDescription: asbd),
+          let block = CMSampleBufferGetDataBuffer(sampleBuffer),
+          CMBlockBufferIsRangeContiguous(block, atOffset: 0, length: 0)
+        else { return }
         var lengthAtOffset = 0
         var totalLength = 0
         var pointer: UnsafeMutablePointer<Int8>?
-        guard CMBlockBufferGetDataPointer(block, atOffset: 0, lengthAtOffsetOut: &lengthAtOffset,
-                                          totalLengthOut: &totalLength, dataPointerOut: &pointer) == kCMBlockBufferNoErr,
-              let pointer else { return }
+        guard
+          CMBlockBufferGetDataPointer(
+            block, atOffset: 0, lengthAtOffsetOut: &lengthAtOffset,
+            totalLengthOut: &totalLength, dataPointerOut: &pointer) == kCMBlockBufferNoErr,
+          let pointer
+        else { return }
 
         // Every buffer handed on is Float32 mono at the source's own rate; the recorder converts from there.
         let channels = max(1, Int(format.channelCount))
@@ -185,8 +195,9 @@
         case .pcmFormatFloat32:
           let frames = totalLength / (MemoryLayout<Float>.size * channels)
           guard frames > 0,
-                let pcm = AVAudioPCMBuffer(pcmFormat: target, frameCapacity: AVAudioFrameCount(frames)),
-                let destination = pcm.floatChannelData?[0] else { return }
+            let pcm = AVAudioPCMBuffer(pcmFormat: target, frameCapacity: AVAudioFrameCount(frames)),
+            let destination = pcm.floatChannelData?[0]
+          else { return }
           pcm.frameLength = AVAudioFrameCount(frames)
           pointer.withMemoryRebound(to: Float.self, capacity: frames * channels) { source in
             // Interleaved or not, take the first channel: a microphone is one channel in practice.
@@ -200,11 +211,14 @@
         case .pcmFormatInt16:
           let frames = totalLength / (MemoryLayout<Int16>.size * channels)
           guard frames > 0,
-                let pcm = AVAudioPCMBuffer(pcmFormat: target, frameCapacity: AVAudioFrameCount(frames)),
-                let destination = pcm.floatChannelData?[0] else { return }
+            let pcm = AVAudioPCMBuffer(pcmFormat: target, frameCapacity: AVAudioFrameCount(frames)),
+            let destination = pcm.floatChannelData?[0]
+          else { return }
           pcm.frameLength = AVAudioFrameCount(frames)
           pointer.withMemoryRebound(to: Int16.self, capacity: frames * channels) { source in
-            for frame in 0..<frames { destination[frame] = Float(source[frame * channels]) / 32_768 }
+            for frame in 0..<frames {
+              destination[frame] = Float(source[frame * channels]) / 32_768
+            }
           }
           onBuffer(pcm, AVAudioTime(hostTime: mach_absolute_time()))
         default:

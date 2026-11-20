@@ -42,18 +42,23 @@ if let path = value(after: "--spectrum-snapshot") {
     let moments = [1.4, 2.2, 3.4, 4.6]
     var images: [NSImage] = []
     for seconds in moments {
-      let view = SpectrumOrbView(spectrum: prefilledSpectrum(seconds: seconds), showStats: false, turning: false)
-        .frame(width: 360, height: 360)
-        .background(Color(red: 0.03, green: 0.06, blue: 0.06))
+      let view = SpectrumOrbView(
+        spectrum: prefilledSpectrum(seconds: seconds), showStats: false, turning: false
+      )
+      .frame(width: 360, height: 360)
+      .background(Color(red: 0.03, green: 0.06, blue: 0.06))
       let renderer = ImageRenderer(content: view)
       renderer.scale = 2
       images.append(renderer.nsImage!)
     }
     let sheet = NSImage(size: NSSize(width: 360 * images.count, height: 360))
     sheet.lockFocus()
-    for (i, image) in images.enumerated() { image.draw(in: NSRect(x: 360 * i, y: 0, width: 360, height: 360)) }
+    for (i, image) in images.enumerated() {
+      image.draw(in: NSRect(x: 360 * i, y: 0, width: 360, height: 360))
+    }
     sheet.unlockFocus()
-    let png = NSBitmapImageRep(data: sheet.tiffRepresentation!)!.representation(using: .png, properties: [:])!
+    let png = NSBitmapImageRep(data: sheet.tiffRepresentation!)!.representation(
+      using: .png, properties: [:])!
     try! png.write(to: URL(fileURLWithPath: path))
     print("wrote \(path)")
   }
@@ -76,8 +81,12 @@ if arguments.contains("--bench") {
   }
   let took = began.duration(to: .now)
   let ms = Double(took.components.seconds) * 1000 + Double(took.components.attoseconds) / 1e15
-  print(String(format: "%.0f s of audio in %.1f ms: %.0fx real time, %.2f ns a sample, %.1f µs a 512-sample buffer",
-    seconds, ms, seconds * 1000 / ms, ms * 1e6 / (seconds * 48_000), ms * 1000 / (seconds * 48_000 / 512)))
+  print(
+    String(
+      format:
+        "%.0f s of audio in %.1f ms: %.0fx real time, %.2f ns a sample, %.1f µs a 512-sample buffer",
+      seconds, ms, seconds * 1000 / ms, ms * 1e6 / (seconds * 48_000),
+      ms * 1000 / (seconds * 48_000 / 512)))
   exit(0)
 }
 
@@ -101,7 +110,9 @@ if let path = value(after: "--snapshot") {
 if let path = value(after: "--orb-snapshot") {
   MainActor.assumeIsolated {
     // Several moments of the same made-up voice: silence, a word starting, a loud word, fading out.
-    let moments: [(String, Double)] = [("quiet", 1.9), ("word", 2.6), ("loud", 3.15), ("after", 4.3)]
+    let moments: [(String, Double)] = [
+      ("quiet", 1.9), ("word", 2.6), ("loud", 3.15), ("after", 4.3),
+    ]
     var images: [NSImage] = []
     for (_, seconds) in moments {
       let view = OrbView(ring: prefilled(seconds: seconds), showStats: false, turning: false)
@@ -113,9 +124,12 @@ if let path = value(after: "--orb-snapshot") {
     }
     let sheet = NSImage(size: NSSize(width: 360 * images.count, height: 360))
     sheet.lockFocus()
-    for (i, image) in images.enumerated() { image.draw(in: NSRect(x: 360 * i, y: 0, width: 360, height: 360)) }
+    for (i, image) in images.enumerated() {
+      image.draw(in: NSRect(x: 360 * i, y: 0, width: 360, height: 360))
+    }
     sheet.unlockFocus()
-    let png = NSBitmapImageRep(data: sheet.tiffRepresentation!)!.representation(using: .png, properties: [:])!
+    let png = NSBitmapImageRep(data: sheet.tiffRepresentation!)!.representation(
+      using: .png, properties: [:])!
     try! png.write(to: URL(fileURLWithPath: path))
     print("wrote \(path)")
   }
@@ -126,7 +140,11 @@ struct WaveformApp: App {
   @State private var live = LiveInput(ring: ColumnRing(capacity: 8192))
   @State private var scale: Scale = .decibels(floor: -60)
   @State private var logarithmic = true
-  enum Look: String, CaseIterable { case bars = "Bars", orb = "Orb", spectrum = "Spectrum orb" }
+  enum Look: String, CaseIterable {
+    case bars = "Bars"
+    case orb = "Orb"
+    case spectrum = "Spectrum orb"
+  }
   @State private var look = Look.spectrum
   @State private var status = ""
 

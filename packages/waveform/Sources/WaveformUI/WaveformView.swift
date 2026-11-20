@@ -64,9 +64,11 @@ public struct WaveformView: View {
       let peakRect = CGRect(
         x: x, y: min(top, mid - minimum / 2), width: barWidth,
         height: max(minimum, bottom - top))
-      peaks.addRoundedRect(in: peakRect, cornerSize: CGSize(width: barWidth / 2, height: barWidth / 2))
+      peaks.addRoundedRect(
+        in: peakRect, cornerSize: CGSize(width: barWidth / 2, height: barWidth / 2))
       let r = CGFloat(scale.height(column.rms)) * mid
-      let loudRect = CGRect(x: x, y: mid - max(minimum / 2, r), width: barWidth, height: max(minimum, 2 * r))
+      let loudRect = CGRect(
+        x: x, y: mid - max(minimum / 2, r), width: barWidth, height: max(minimum, 2 * r))
       loudness.addRoundedRect(
         in: loudRect, cornerSize: CGSize(width: barWidth / 2, height: barWidth / 2))
     }

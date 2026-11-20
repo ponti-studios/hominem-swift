@@ -30,7 +30,10 @@ public struct ColumnWindow {
         max(abs(scale.height(column.high)), abs(scale.height(column.low)))
       )
     }
-    let p0 = at(i - 1), p1 = at(i), p2 = at(i + 1), p3 = at(i + 2)
+    let p0 = at(i - 1)
+    let p1 = at(i)
+    let p2 = at(i + 1)
+    let p3 = at(i + 2)
     return (
       max(0, Self.catmullRom(p0.0, p1.0, p2.0, p3.0, t)),
       max(0, min(1, Self.catmullRom(p0.1, p1.1, p2.1, p3.1, t)))
@@ -38,7 +41,9 @@ public struct ColumnWindow {
   }
 
   /// The curve through p1 (at t = 0) and p2 (at t = 1), shaped by the points either side.
-  public static func catmullRom(_ p0: Float, _ p1: Float, _ p2: Float, _ p3: Float, _ t: Float) -> Float {
+  public static func catmullRom(_ p0: Float, _ p1: Float, _ p2: Float, _ p3: Float, _ t: Float)
+    -> Float
+  {
     let t2 = t * t
     let t3 = t2 * t
     return 0.5

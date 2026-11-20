@@ -73,7 +73,8 @@ import Testing
     ring.afterCopy = {
       guard laps == 0 else { return }
       laps += 1
-      for i in 8..<24 { ring.append(Column(low: Float(i), high: 0, rms: 0)) }  // the writer laps the reader
+      // The writer laps the reader.
+      for i in 8..<24 { ring.append(Column(low: Float(i), high: 0, rms: 0)) }
     }
     var out = [Column](repeating: .silent, count: 4)
     let (real, end) = out.withUnsafeMutableBufferPointer { ring.snapshot(4, into: $0.baseAddress!) }

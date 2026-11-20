@@ -43,7 +43,8 @@ public struct FrameClock: Sendable {
   private let phaseGain: Double
   private let periodGain: Double
 
-  public init(initialPeriod: Double = 1.0 / 60, phaseGain: Double = 0.15, periodGain: Double = 0.01) {
+  public init(initialPeriod: Double = 1.0 / 60, phaseGain: Double = 0.15, periodGain: Double = 0.01)
+  {
     period = initialPeriod
     self.phaseGain = phaseGain
     self.periodGain = periodGain

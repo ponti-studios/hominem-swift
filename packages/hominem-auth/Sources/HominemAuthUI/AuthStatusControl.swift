@@ -11,50 +11,50 @@ import SwiftUI
 /// ```
 @available(iOS 17, macOS 14, *)
 public struct AuthStatusControl: View {
-    @Bindable var controller: AuthController
-    @State private var showingSignIn = false
+  @Bindable var controller: AuthController
+  @State private var showingSignIn = false
 
-    public init(controller: AuthController) {
-        self.controller = controller
-    }
+  public init(controller: AuthController) {
+    self.controller = controller
+  }
 
-    public var body: some View {
-        Group {
-            if let user = controller.signedInUser {
-                Menu {
-                    Text(user.email)
-                    Divider()
-                    Button("Sign Out", role: .destructive) {
-                        Task { await controller.signOut() }
-                    }
-                } label: {
-                    Label(user.name ?? user.email, systemImage: "person.crop.circle.fill")
-                }
-                #if os(macOS)
-                .menuStyle(.borderlessButton)
-                .fixedSize()
-                #endif
-            } else {
-                Button {
-                    showingSignIn = true
-                } label: {
-                    Label("Sign In", systemImage: "person.crop.circle.badge.questionmark")
-                }
-            }
+  public var body: some View {
+    Group {
+      if let user = controller.signedInUser {
+        Menu {
+          Text(user.email)
+          Divider()
+          Button("Sign Out", role: .destructive) {
+            Task { await controller.signOut() }
+          }
+        } label: {
+          Label(user.name ?? user.email, systemImage: "person.crop.circle.fill")
         }
-        .disabled(controller.isBusy)
-        .sheet(isPresented: $showingSignIn) {
-            SignInView(controller: controller)
-            #if os(iOS)
-            .presentationDetents([.medium])
-            #endif
+        #if os(macOS)
+          .menuStyle(.borderlessButton)
+          .fixedSize()
+        #endif
+      } else {
+        Button {
+          showingSignIn = true
+        } label: {
+          Label("Sign In", systemImage: "person.crop.circle.badge.questionmark")
         }
+      }
     }
+    .disabled(controller.isBusy)
+    .sheet(isPresented: $showingSignIn) {
+      SignInView(controller: controller)
+        #if os(iOS)
+          .presentationDetents([.medium])
+        #endif
+    }
+  }
 }
 
 @available(iOS 17, macOS 14, *)
 #Preview {
-    let auth = AuthClient(configuration: .localDevelopment)
-    return AuthStatusControl(controller: AuthController(client: auth))
-        .padding()
+  let auth = AuthClient(configuration: .localDevelopment)
+  return AuthStatusControl(controller: AuthController(client: auth))
+    .padding()
 }

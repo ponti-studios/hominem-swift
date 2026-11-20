@@ -79,12 +79,15 @@ import WaveformCore
     let milliseconds = try recorder.stop()
 
     #expect(source.stopped, "stop reaches the source")
-    #expect(abs(milliseconds - 1_000) < 30, "48 000 frames at 48 kHz is one second — got \(milliseconds) ms")
+    #expect(
+      abs(milliseconds - 1_000) < 30,
+      "48 000 frames at 48 kHz is one second — got \(milliseconds) ms")
 
     let written = try AVAudioFile(forReading: out)
     // Not exactly 16 000: a converter holds a few frames of priming, and the tail of the last buffer is padding.
-    #expect(abs(Double(written.length) - 16_000) < 700,
-            "the file holds the resampled length, not the source's — got \(written.length)")
+    #expect(
+      abs(Double(written.length) - 16_000) < 700,
+      "the file holds the resampled length, not the source's — got \(written.length)")
     #expect(written.processingFormat.sampleRate == 16_000)
     #expect(written.processingFormat.channelCount == 1)
   }
@@ -96,8 +99,9 @@ import WaveformCore
     let recorder = EngineRecorder(settings: .localTranscription, audioSource: source)
     try recorder.start(to: out)
 
-    for _ in 0..<5 { try source.emit(frames: 4_800) }              // 0.5 s at 48 kHz
-    for _ in 0..<5 { try source.emit(frames: 4_800, rate: 24_000) } // 1.0 s at 24 kHz — half as many frames a second
+    for _ in 0..<5 { try source.emit(frames: 4_800) }  // 0.5 s at 48 kHz
+    // 1.0 s at 24 kHz — half as many frames a second.
+    for _ in 0..<5 { try source.emit(frames: 4_800, rate: 24_000) }
     let milliseconds = try recorder.stop()
 
     #expect(source.formatChanges == 1)
@@ -140,7 +144,8 @@ import WaveformCore
     let empty = AudioSourceChoice.make(settings: .localTranscription, deviceUID: "")
     #expect(empty is EngineSource)
 
-    let pinned = AudioSourceChoice.make(settings: .localTranscription, deviceUID: "BuiltInMicrophoneDevice")
+    let pinned = AudioSourceChoice.make(
+      settings: .localTranscription, deviceUID: "BuiltInMicrophoneDevice")
     #expect(pinned is CaptureSource)
   }
 }

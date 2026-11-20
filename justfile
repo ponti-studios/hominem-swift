@@ -10,11 +10,15 @@ test:
 
 # Normalize formatting across the root manifest and packages.
 fmt:
-    swift-format format --recursive --in-place Package.swift packages
+    swift-format format --recursive --in-place Package.swift packages/*/Sources packages/*/Tests
 
 # Fail if any file drifts from the committed formatting.
 lint:
-    swift-format lint --recursive Package.swift packages
+    swift-format lint --recursive Package.swift packages/*/Sources packages/*/Tests
+
+# Enforce WaveformCore and WaveformUI's 100% line coverage gate.
+waveform-coverage:
+    bash scripts/waveform-coverage.sh
 
 # Print the resolved products, targets, and platforms.
 package-describe:
@@ -29,7 +33,7 @@ doctor:
     @git status --short | head -20 && test -z "$(git status --short)" && echo "tree clean" || echo "tree dirty"
 
 # Gate every release must pass before tagging.
-release-check: build test lint
+release-check: build test lint waveform-coverage
     git diff --check
     @test -z "$(git status --short)" || (echo "ERROR: dirty tree, commit first" && exit 1)
     @echo "release checks passed"

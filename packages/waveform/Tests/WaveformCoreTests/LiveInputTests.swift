@@ -36,14 +36,18 @@ import Testing
 
   private func pcm(_ samples: [Float]) -> AVAudioPCMBuffer {
     let format = AVAudioFormat(standardFormatWithSampleRate: Self.rate, channels: 1)!
-    let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(samples.count))!
+    let buffer = AVAudioPCMBuffer(
+      pcmFormat: format, frameCapacity: AVAudioFrameCount(samples.count))!
     buffer.frameLength = AVAudioFrameCount(samples.count)
-    samples.withUnsafeBufferPointer { buffer.floatChannelData![0].update(from: $0.baseAddress!, count: samples.count) }
+    samples.withUnsafeBufferPointer {
+      buffer.floatChannelData![0].update(from: $0.baseAddress!, count: samples.count)
+    }
     return buffer
   }
 
   private func wav(seconds: Double) throws -> URL {
-    let url = FileManager.default.temporaryDirectory.appendingPathComponent("waveform-\(UUID()).wav")
+    let url = FileManager.default.temporaryDirectory.appendingPathComponent(
+      "waveform-\(UUID()).wav")
     let samples = Synthesize.vowels(seconds: seconds, sampleRate: Self.rate)
     let file = try AVAudioFile(
       forWriting: url,
@@ -90,11 +94,14 @@ import Testing
 
   @Test func aMissingFileThrows() throws {
     let live = LiveInput(ring: ColumnRing(capacity: 16), engine: try offlineEngine())
-    #expect(throws: (any Error).self) { try live.play(file: URL(fileURLWithPath: "/nonexistent/none.wav")) }
+    #expect(throws: (any Error).self) {
+      try live.play(file: URL(fileURLWithPath: "/nonexistent/none.wav"))
+    }
   }
 
   @Test func aRefusedMicrophoneThrowsAndSaysWhy() async throws {
-    let live = LiveInput(ring: ColumnRing(capacity: 16), engine: try offlineEngine(), requestAccess: { false })
+    let live = LiveInput(
+      ring: ColumnRing(capacity: 16), engine: try offlineEngine(), requestAccess: { false })
     await #expect(throws: LiveInput.MicrophoneError.self) { try await live.startMicrophone() }
     #expect(LiveInput.MicrophoneError.denied.description.contains("System Settings"))
   }
@@ -134,7 +141,8 @@ import Testing
 
   @Test func aBufferWithoutOneLeavesTheClockAlone() {
     let clock = StreamClock()
-    LiveInput.stamp(clock, at: AVAudioTime(sampleTime: 0, atRate: 48_000), samplesSeen: 0, rate: 48_000)
+    LiveInput.stamp(
+      clock, at: AVAudioTime(sampleTime: 0, atRate: 48_000), samplesSeen: 0, rate: 48_000)
     #expect(clock.offset == nil)
   }
 }

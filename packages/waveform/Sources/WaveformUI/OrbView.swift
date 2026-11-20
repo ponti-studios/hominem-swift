@@ -35,7 +35,8 @@ public struct OrbView: View {
   ///   - tint: the colour of the dots.
   ///   - dotCount: number of dots on the sphere.
   public init(
-    ring: ColumnRing, columnsPerSecond: Double = 120, clock: StreamClock? = nil, latency: Double = 0.06,
+    ring: ColumnRing, columnsPerSecond: Double = 120, clock: StreamClock? = nil,
+    latency: Double = 0.06,
     scale: Scale = .decibels(floor: -60), gain: Float = 0.45, historySeconds: Double = 0.8,
     showStats: Bool = true, turning: Bool = true, tint: Color = .mint, dotCount: Int = 1_400,
     spinRate: Float = 0.35, still: Float = 0.6, dotScale: Double = 1
@@ -59,7 +60,10 @@ public struct OrbView: View {
   public var body: some View {
     FrameCanvas(
       scratch: scratch, showStats: showStats,
-      stats: { String(format: "draw %.2f ms · %d dots · %d columns", scratch.drawMs, model.count, ring.count) },
+      stats: {
+        String(
+          format: "draw %.2f ms · %d dots · %d columns", scratch.drawMs, model.count, ring.count)
+      },
       draw: draw)
   }
 
@@ -77,7 +81,8 @@ public struct OrbView: View {
     let projection = OrbProjection(
       spin: OrbProjection.spin(turning: turning, time: frameTime, rate: spinRate, still: still),
       tip: 0.35)
-    drawOrbDots(&context, size: size, model: model, projection: projection, gain: gain, tint: tint) { i in
+    drawOrbDots(&context, size: size, model: model, projection: projection, gain: gain, tint: tint)
+    { i in
       let (out, peak) = OrbModel.sample(
         age: model.age[i], window: window, playhead: playhead, history: history, scale: scale,
         gain: gain)
