@@ -12,9 +12,10 @@ cd "$(dirname "$0")/.."
 
 swift test --enable-code-coverage "$@"
 
-PROFDATA=.build/debug/codecov/default.profdata
+BINPATH=$(swift build --show-bin-path)
+PROFDATA="$BINPATH/codecov/default.profdata"
 BINS=()
-for bundle in .build/debug/*.xctest; do
+for bundle in "$BINPATH"/*.xctest; do
   if [[ "$bundle" == *Waveform* ]]; then
     BINS+=("$bundle/Contents/MacOS/$(basename "${bundle%.xctest}")")
   fi

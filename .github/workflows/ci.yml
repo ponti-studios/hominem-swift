@@ -52,6 +52,6 @@ jobs:
       - name: Build for generic iOS destination
         run: |
           set -o pipefail
-          xcodebuild -scheme HominemSwift-Package \
+          xcodebuild -scheme WaveformUI \
             -destination 'generic/platform=iOS' \
             -quiet build
