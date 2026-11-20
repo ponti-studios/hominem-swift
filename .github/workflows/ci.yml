@@ -22,6 +22,19 @@ jobs:
       - name: Test
         run: swift test
 
+  watchos-auth-build:
+    name: watchOS 10 HominemAuth build
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build HominemAuth for watchOS
+        run: |
+          set -o pipefail
+          xcodebuild -scheme HominemAuth \
+            -destination 'generic/platform=watchOS' \
+            -quiet build
+
   waveform-coverage:
     name: Waveform 100% coverage gate
     runs-on: macos-26
