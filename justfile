@@ -16,10 +16,6 @@ fmt:
 lint:
     swift-format lint --recursive Package.swift packages/*/Sources packages/*/Tests
 
-# Enforce WaveformCore and WaveformUI's 100% line coverage gate.
-waveform-coverage:
-    bash scripts/waveform-coverage.sh
-
 # Print the resolved products, targets, and platforms.
 package-describe:
     swift package describe
@@ -33,7 +29,7 @@ doctor:
     @git status --short | head -20 && test -z "$(git status --short)" && echo "tree clean" || echo "tree dirty"
 
 # Gate every release must pass before tagging.
-release-check: build test lint waveform-coverage
+release-check: build test lint
     git diff --check
     @test -z "$(git status --short)" || (echo "ERROR: dirty tree, commit first" && exit 1)
     @echo "release checks passed"

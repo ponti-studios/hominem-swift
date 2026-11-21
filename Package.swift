@@ -14,10 +14,6 @@ let package = Package(
     .library(name: "TransitCore", targets: ["TransitCore"]),
     .library(name: "HominemAuth", targets: ["HominemAuth"]),
     .library(name: "HominemAuthUI", targets: ["HominemAuthUI"]),
-    .library(name: "WaveformCore", targets: ["WaveformCore"]),
-    .library(name: "WaveformUI", targets: ["WaveformUI"]),
-    .library(name: "WaveformCapture", targets: ["WaveformCapture"]),
-    .executable(name: "WaveformApp", targets: ["WaveformApp"]),
   ],
   targets: [
     .target(
@@ -60,47 +56,6 @@ let package = Package(
       name: "HominemAuthUI",
       dependencies: ["HominemAuth"],
       path: "packages/hominem-auth/Sources/HominemAuthUI"
-    ),
-    .target(
-      name: "WaveformCore",
-      path: "packages/waveform/Sources/WaveformCore"
-    ),
-    .target(
-      name: "WaveformUI",
-      dependencies: ["WaveformCore"],
-      path: "packages/waveform/Sources/WaveformUI"
-    ),
-    .target(
-      name: "WaveformCapture",
-      dependencies: ["WaveformCore"],
-      path: "packages/waveform/Sources/WaveformCapture"
-    ),
-    .executableTarget(
-      name: "WaveformApp",
-      dependencies: ["WaveformCore", "WaveformUI"],
-      path: "packages/waveform/Sources/WaveformApp",
-      exclude: ["Info.plist"],
-      linkerSettings: [
-        .unsafeFlags([
-          "-Xlinker", "-sectcreate", "-Xlinker", "__TEXT", "-Xlinker", "__info_plist",
-          "-Xlinker", "packages/waveform/Sources/WaveformApp/Info.plist",
-        ])
-      ]
-    ),
-    .testTarget(
-      name: "WaveformCoreTests",
-      dependencies: ["WaveformCore"],
-      path: "packages/waveform/Tests/WaveformCoreTests"
-    ),
-    .testTarget(
-      name: "WaveformUITests",
-      dependencies: ["WaveformUI", "WaveformCore"],
-      path: "packages/waveform/Tests/WaveformUITests"
-    ),
-    .testTarget(
-      name: "WaveformCaptureTests",
-      dependencies: ["WaveformCapture", "WaveformCore"],
-      path: "packages/waveform/Tests/WaveformCaptureTests"
     ),
     .testTarget(
       name: "HominemAuthTests",
